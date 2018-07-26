@@ -1,0 +1,374 @@
+--- simpleFS.c	2017-11-30 20:48:19.967900155 -0500
++++ simpleFS_new.c	2017-11-30 20:56:29.423040498 -0500
+@@ -23,7 +23,7 @@
+     if (fp == NULL) {
+ 
+     	printf("ACE error: bad directory\n");
+-    	return;
++    	exit(0);
+     }
+ 
+     sb.s_inodes_count = 40;
+@@ -141,6 +141,7 @@
+     //printf("ace\n");
+ 
+     fclose(fp);
++    open_filesystem(real_path, n);
+ }
+ 
+ void open_filesystem(char *real_path, unsigned int n)
+@@ -159,7 +160,7 @@
+     if (fp == NULL) {
+ 
+     	printf("ACE error: bad directory\n");
+-    	return;
++    	exit(0);
+     }
+ 
+     char buffer[512];
+@@ -170,7 +171,7 @@
+     if (sb.s_magic != 0x554e4958) {
+ 
+         printf("ACE error: magic number does not match\n");
+-        return;
++        exit(0);
+     }
+ 
+     //read in block bm
+@@ -346,7 +347,7 @@
+ 	if (sb.s_free_inodes_count == 0 || sb.s_free_blocks_count == 0) {
+ 
+ 		printf("ACE error: no more space\n");
+-		return;
++		exit(0);
+ 	}
+ 
+     int i;
+@@ -363,7 +364,7 @@
+     if (i < 0) {
+ 
+         printf("ACE error: bad path\n");
+-        return;
++        exit(0);
+     }
+ 
+     char dir[i+1];
+@@ -432,7 +433,7 @@
+             if (S_ISREG(ino.i_mode)) {
+ 
+ 		    	printf("ACE error: not a dir\n");
+-		    	return;
++		    	exit(0);
+ 		    }
+ 
+             fseek(fp, 8*512 + ino.i_block[0]*512, SEEK_SET);
+@@ -459,7 +460,7 @@
+             if (x == 8) {
+ 
+                 printf("ACE error: bad path\n");
+-                return;
++                exit(0);
+             }
+         }
+     }
+@@ -486,14 +487,14 @@
+         if (!strncmp(dirent.d_name, fil, 57)) {
+ 
+             printf("ACE error: dir already exist\n");
+-            return;
++            exit(0);
+         }
+     }
+ 
+     if (_x == 100) {
+ 
+     	printf("ACE error: no more space1\n");
+-    	return;
++    	exit(0);
+     }
+ 
+     ino.i_size += 64;
+@@ -572,7 +573,7 @@
+     if (i < 0) {
+ 
+         printf("ACE error: bad path\n");
+-        return;
++        exit(0);
+     }
+ 
+     char dir[n+1];
+@@ -635,7 +636,7 @@
+             if (S_ISREG(ino.i_mode)) {
+ 
+ 		    	printf("ACE error: not a dir\n");
+-		    	return;
++		    	exit(0);
+ 		    }
+ 
+             fseek(fp, 8*512 + ino.i_block[0]*512, SEEK_SET);
+@@ -662,7 +663,7 @@
+             if (x == 8) {
+ 
+                 printf("ACE error: bad path\n");
+-                return;
++                exit(0);
+             }
+         }
+     }
+@@ -672,7 +673,7 @@
+     if (S_ISREG(ino.i_mode)) {
+ 
+     	printf("ACE error: not a dir\n");
+-    	return;
++    	exit(0);
+     }
+ 
+     fseek(fp, 8*512 + ino.i_block[0]*512, SEEK_SET);
+@@ -726,7 +727,7 @@
+     if (i < 0) {
+ 
+         printf("ACE error: bad path\n");
+-        return;
++        exit(0);
+     }
+ 
+     char dir[i+1];
+@@ -795,7 +796,7 @@
+             if (S_ISREG(ino.i_mode)) {
+ 
+ 		    	printf("ACE error: not a dir\n");
+-		    	return;
++		    	exit(0);
+ 		    }
+ 
+             fseek(fp, 8*512 + ino.i_block[0]*512, SEEK_SET);
+@@ -822,7 +823,7 @@
+             if (x == 8) {
+ 
+                 printf("ACE error: bad path\n");
+-                return;
++                exit(0);
+             }
+         }
+     }
+@@ -853,12 +854,12 @@
+             if (S_ISREG(ino.i_mode)) {
+ 
+             	printf("ACE error: not a dir\n");
+-            	return;
++            	exit(0);
+             }
+             if (ino.i_size > 128) {
+ 
+             	printf("ACE error: non-empty dir\n");
+-            	return;
++            	exit(0);
+             }
+             _x = x;
+         	break;
+@@ -868,7 +869,7 @@
+     if (x == 8 || _x == 100) {
+ 
+         printf("ACE error: bad path\n");
+-        return;
++        exit(0);
+     }
+ 
+     ino1.i_size -= 64;
+@@ -899,7 +900,7 @@
+ 	if (size > 512 * 8) {
+ 
+ 		printf("ACE error: file too large\n");
+-		return;
++		exit(0);
+ 	}
+ 
+ 	int n_blocks = (size / 512) + (size % 512 != 0);
+@@ -907,7 +908,7 @@
+ 	if (sb.s_free_inodes_count == 0 || sb.s_free_blocks_count < n_blocks) {
+ 
+ 		printf("ACE error: no more space\n");
+-		return;
++		exit(0);
+ 	}
+ 
+     int i;
+@@ -924,7 +925,7 @@
+     if (i < 0) {
+ 
+         printf("ACE error: bad path\n");
+-        return;
++        exit(0);
+     }
+ 
+     char dir[i+1];
+@@ -993,7 +994,7 @@
+             if (S_ISREG(ino.i_mode)) {
+ 
+ 		    	printf("ACE error: not a dir\n");
+-		    	return;
++		    	exit(0);
+ 		    }
+ 
+             fseek(fp, 8*512 + ino.i_block[0]*512, SEEK_SET);
+@@ -1020,7 +1021,7 @@
+             if (x == 8) {
+ 
+                 printf("ACE error: bad path\n");
+-                return;
++                exit(0);
+             }
+         }
+     }
+@@ -1047,14 +1048,14 @@
+         if (!strncmp(dirent.d_name, fil, 57)) {
+ 
+             printf("ACE error: fil already exist\n");
+-            return;
++            exit(0);
+         }
+     }
+ 
+     if (_x == 100) {
+ 
+     	printf("ACE error: no more space\n");
+-    	return;
++    	exit(0);
+     }
+ 
+     ino.i_size += 64;
+@@ -1104,6 +1105,8 @@
+     	size -= 512;
+     }
+ 
++    fseek(fp, 8 * 512 + ino.i_block[i] * 512, SEEK_SET);
++
+     for (j = 0; j < size; j++) {
+ 
+     		fwrite(data, 1, 1, fp);
+@@ -1133,7 +1136,7 @@
+     if (i < 0) {
+ 
+         printf("ACE error: bad path\n");
+-        return;
++        exit(0);
+     }
+ 
+     char dir[i+1];
+@@ -1202,7 +1205,7 @@
+             if (S_ISREG(ino.i_mode)) {
+ 
+ 		    	printf("ACE error: not a dir\n");
+-		    	return;
++		    	exit(0);
+ 		    }
+ 
+             fseek(fp, 8*512 + ino.i_block[0]*512, SEEK_SET);
+@@ -1229,7 +1232,7 @@
+             if (x == 8) {
+ 
+                 printf("ACE error: bad path\n");
+-                return;
++                exit(0);
+             }
+         }
+     }
+@@ -1260,7 +1263,7 @@
+             if (S_ISDIR(ino.i_mode)) {
+ 
+             	printf("ACE error: not a file\n");
+-            	return;
++            	exit(0);
+             }
+             _x = x;
+         	break;
+@@ -1270,7 +1273,7 @@
+     if (x == 8 || _x == 100) {
+ 
+         printf("ACE error: bad path\n");
+-        return;
++        exit(0);
+     }
+ 
+     ino1.i_size -= 64;
+@@ -1317,7 +1320,7 @@
+     if (i < 0) {
+ 
+         printf("ACE error: bad path\n");
+-        return;
++        exit(0);
+     }
+ 
+     char dir[n+1];
+@@ -1380,7 +1383,7 @@
+             if (S_ISREG(ino.i_mode)) {
+ 
+ 		    	printf("ACE error: not a dir\n");
+-		    	return;
++		    	exit(0);
+ 		    }
+ 
+             fseek(fp, 8*512 + ino.i_block[0]*512, SEEK_SET);
+@@ -1407,7 +1410,7 @@
+             if (x == 8) {
+ 
+                 printf("ACE error: bad path\n");
+-                return;
++                exit(0);
+             }
+         }
+     }
+@@ -1417,7 +1420,7 @@
+     if (S_ISDIR(ino.i_mode)) {
+ 
+     	printf("ACE error: not a file\n");
+-    	return;
++    	exit(0);
+     }
+ 
+     //printf("ace\n");
+@@ -1468,7 +1471,7 @@
+     if (i < 0) {
+ 
+         printf("ACE error: bad path\n");
+-        return;
++        exit(0);
+     }
+ 
+     char dir[n+1];
+@@ -1531,7 +1534,7 @@
+             if (S_ISREG(ino.i_mode)) {
+ 
+ 		    	printf("ACE error: not a dir\n");
+-		    	return;
++		    	exit(0);
+ 		    }
+ 
+             fseek(fp, 8*512 + ino.i_block[0]*512, SEEK_SET);
+@@ -1558,7 +1561,7 @@
+             if (x == 8) {
+ 
+                 printf("ACE error: bad path\n");
+-                return;
++                exit(0);
+             }
+         }
+     }
+@@ -1585,7 +1588,7 @@
+             if (S_ISDIR(ino.i_mode)) {
+ 
+             	printf("ACE error: not a file\n");
+-            	return;
++            	exit(0);
+             }
+             _x = x;
+         	break;
+@@ -1595,7 +1598,7 @@
+     if (x == 8 || _x == 100) {
+ 
+         printf("ACE error: bad path\n");
+-        return;
++        exit(0);
+     }
+ 
+     ino.i_links_count++;
